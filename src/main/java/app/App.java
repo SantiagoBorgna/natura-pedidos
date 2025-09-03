@@ -1,21 +1,17 @@
 package app;
 
-import app.dao.DBConnection;
+import app.ui.MainWindow;
 
-import java.sql.Connection;
+import javax.swing.*;
+import java.awt.*;
 
 public class App {
-    //static Image logo = Toolkit.getDefaultToolkit().getImage(App.class.getResource("/logo arca.png"));
-
-    //static JTable listTable;
+    public static Image logo = Toolkit.getDefaultToolkit().getImage(App.class.getResource("/images/logo-natura.png"));
 
     public static void main(String[] args) {
-        try (Connection conn = DBConnection.getConnection()) {
-            if (conn != null) {
-                System.out.println("Conexión exitosa a SQLite!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SwingUtilities.invokeLater(() -> {
+            MainWindow ventana = new MainWindow();
+            ventana.setVisible(true);
+        });
     }
 }

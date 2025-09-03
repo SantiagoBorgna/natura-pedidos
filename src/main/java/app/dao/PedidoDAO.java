@@ -71,7 +71,7 @@ public class PedidoDAO {
     }
 
     public void actualizarPedido(Pedido pedido) {
-        String sql = "UPDATE pedidos SET cliente = ?, producto = ?, codigo = ?, cantidad = ?, precio_unitario = ?, precio_total = ? WHERE id = ?";
+        String sql = "UPDATE pedidos SET cliente=?, producto=?, codigo=?, cantidad=?, precio_unitario=?, precio_total=? WHERE id=?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -85,25 +85,21 @@ public class PedidoDAO {
             pstmt.setInt(7, pedido.getId());
 
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
     public void eliminarPedido(int id) {
-        String sql = "DELETE FROM pedidos WHERE id = ?";
-
+        String sql = "DELETE FROM pedidos WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
 }
