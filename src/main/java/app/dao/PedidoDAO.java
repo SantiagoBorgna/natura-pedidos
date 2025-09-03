@@ -10,10 +10,9 @@ public class PedidoDAO {
     private static final String URL = "jdbc:sqlite:database/natura_pedidos.db";
 
     public void agregarPedido(Pedido pedido) {
-        String sql = "INSERT INTO pedidos (cliente, producto, codigo, cantidad, precio_unitario, precio_total) VALUES (?, ?, ?, ?, ?, ?)";
-
+        String sql = "INSERT INTO pedidos (cliente, producto, codigo, cantidad, precio_unitario, precio_total, ciclo_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, pedido.getCliente());
             pstmt.setString(2, pedido.getProducto());
@@ -21,39 +20,37 @@ public class PedidoDAO {
             pstmt.setInt(4, pedido.getCantidad());
             pstmt.setDouble(5, pedido.getPrecioUnitario());
             pstmt.setDouble(6, pedido.getPrecioTotal());
+            pstmt.setInt(7, pedido.getCicloId());
 
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public List<Pedido> listarPedidos() {
-        List<Pedido> pedidos = new ArrayList<>();
-        String sql = "SELECT * FROM pedidos";
-
+    public List<Pedido> listarPedidos(int cicloId) {
+        List<Pedido> lista = new ArrayList<>();
+        String sql = "SELECT * FROM pedidos WHERE ciclo_id = ?";
         try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, cicloId);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Pedido pedido = new Pedido(
-                        rs.getString("Cliente"),
+                Pedido p = new Pedido(
+                        rs.getString("cliente"),
                         rs.getString("producto"),
                         rs.getString("codigo"),
                         rs.getInt("cantidad"),
                         rs.getDouble("precio_unitario")
                 );
-                pedido.setId(rs.getInt("id")); // seteamos el ID aparte
-                pedidos.add(pedido);
+                p.setId(rs.getInt("id"));
+                p.setCicloId(rs.getInt("ciclo_id"));
+                lista.add(p);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return pedidos;
+        return lista;
     }
 
     public double calcularTotal() {
@@ -71,8 +68,7 @@ public class PedidoDAO {
     }
 
     public void actualizarPedido(Pedido pedido) {
-        String sql = "UPDATE pedidos SET cliente=?, producto=?, codigo=?, cantidad=?, precio_unitario=?, precio_total=? WHERE id=?";
-
+        String sql = "UPDATE pedidos SET cliente=?, producto=?, codigo=?, cantidad=?, precio_unitario=?, precio_total=?, ciclo_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -82,13 +78,15 @@ public class PedidoDAO {
             pstmt.setInt(4, pedido.getCantidad());
             pstmt.setDouble(5, pedido.getPrecioUnitario());
             pstmt.setDouble(6, pedido.getPrecioTotal());
-            pstmt.setInt(7, pedido.getId());
+            pstmt.setInt(7, pedido.getCicloId());
+            pstmt.setInt(8, pedido.getId());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public void eliminarPedido(int id) {
         String sql = "DELETE FROM pedidos WHERE id=?";

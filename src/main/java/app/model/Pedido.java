@@ -8,6 +8,7 @@ public class Pedido {
     private int cantidad;
     private double precioUnitario;
     private double precioTotal;
+    private Integer cicloId;
 
     // Constructor
     public Pedido(String cliente, String producto, String codigo, int cantidad, double precioUnitario) {
@@ -74,5 +75,13 @@ public class Pedido {
 
     public void setPrecioTotal(double precioTotal) {
         this.precioTotal = precioTotal;
+    }
+
+    public Integer getCicloId() {
+        return cicloId;
+    }
+
+    public void setCicloId(Integer cicloId) {
+        this.cicloId = cicloId;
     }
 }

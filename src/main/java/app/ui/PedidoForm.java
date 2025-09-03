@@ -15,24 +15,29 @@ public class PedidoForm extends JDialog {
     private JTextField txtPrecioUnitario;
 
     private PedidoDAO pedidoDAO;
-    private Pedido pedido; // puede ser nuevo o existente
+    private Pedido pedido;
+    private Integer cicloId;
 
-    public PedidoForm(JFrame parent, PedidoDAO pedidoDAO) {
-        this(parent, pedidoDAO, null); // constructor para "Agregar"
+    //Agregar
+    public PedidoForm(JFrame parent, PedidoDAO pedidoDAO, int cicloId) {
+        this(parent, pedidoDAO, null);
+        this.cicloId = cicloId;
     }
 
+    //Editar
     public PedidoForm(JFrame parent, PedidoDAO pedidoDAO, Pedido pedido) {
         super(parent, true);
         this.pedidoDAO = pedidoDAO;
         this.pedido = pedido;
+        this.cicloId = (pedido != null ? pedido.getCicloId() : null);
 
         setTitle(pedido == null ? "Agregar Pedido" : "Editar Pedido");
         setSize(400, 300);
         setLocationRelativeTo(parent);
 
-        initUI();
+        initUI(); // construís la interfaz
         if (pedido != null) {
-            cargarDatosPedido(pedido);
+            cargarDatosPedido(pedido); // precargar valores en los campos
         }
     }
 
@@ -85,17 +90,19 @@ public class PedidoForm extends JDialog {
             double precioUnit = Double.parseDouble(txtPrecioUnitario.getText());
 
             if (pedido == null) {
-                // nuevo
+                //Agregar
                 Pedido nuevo = new Pedido(cliente, producto, codigo, cantidad, precioUnit);
+                nuevo.setCicloId(cicloId);
                 pedidoDAO.agregarPedido(nuevo);
             } else {
-                // edición
+                //Editar
                 pedido.setCliente(cliente);
                 pedido.setProducto(producto);
                 pedido.setCodigo(codigo);
                 pedido.setCantidad(cantidad);
                 pedido.setPrecioUnitario(precioUnit);
                 pedido.setPrecioTotal(cantidad * precioUnit);
+                pedido.setCicloId(cicloId);
 
                 pedidoDAO.actualizarPedido(pedido);
             }
