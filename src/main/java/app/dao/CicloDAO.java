@@ -1,7 +1,6 @@
 package app.dao;
 
 import app.model.Ciclo;
-import app.dao.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -69,5 +68,21 @@ public class CicloDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void actualizarCiclo(Ciclo ciclo) {
+        String sql = "UPDATE ciclos SET fecha_inicio = ?, fecha_fin = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, ciclo.getFechaInicio().toString());
+            pstmt.setString(2, ciclo.getFechaFin().toString());
+            pstmt.setInt(3, ciclo.getId());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

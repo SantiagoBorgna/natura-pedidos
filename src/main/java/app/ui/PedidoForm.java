@@ -89,6 +89,11 @@ public class PedidoForm extends JDialog {
             int cantidad = Integer.parseInt(txtCantidad.getText());
             double precioUnit = Double.parseDouble(txtPrecioUnitario.getText());
 
+            if (cantidad < 0 || precioUnit < 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad y el precio deben ser mayores o iguales a 0.");
+                return;
+            }
+
             if (pedido == null) {
                 //Agregar
                 Pedido nuevo = new Pedido(cliente, producto, codigo, cantidad, precioUnit);

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoDAO {
-    private static final String URL = "jdbc:sqlite:database/natura_pedidos.db";
 
     public void agregarPedido(Pedido pedido) {
         String sql = "INSERT INTO pedidos (cliente, producto, codigo, cantidad, precio_unitario, precio_total, ciclo_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -55,7 +54,7 @@ public class PedidoDAO {
 
     public double calcularTotal() {
         String sql = "SELECT SUM(precio_total) AS total FROM pedidos";
-        try (Connection conn = DriverManager.getConnection(URL);
+        try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 

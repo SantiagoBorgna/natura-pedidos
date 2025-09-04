@@ -6,9 +6,11 @@ import app.dao.CicloDAO;
 import app.model.Pedido;
 import app.model.Ciclo;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -42,25 +44,56 @@ public class MainWindow extends JFrame {
 
         //Header
         JPanel panelHeader = new JPanel(new BorderLayout());
+        panelHeader.setBackground(new Color(233, 212, 195));
+        panelHeader.setBorder(null);
+
+        JPanel panelCentro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        panelCentro.setBackground(new Color(233, 212, 195));
 
         JButton btnPrev = new JButton("<");
         JButton btnNext = new JButton(">");
 
         // Panel central con ciclo y fecha
-        JPanel panelCentro = new JPanel();
-        panelCentro.setLayout(new BoxLayout(panelCentro, BoxLayout.Y_AXIS));
+        JPanel panelCiclo = new JPanel();
+        panelCiclo.setLayout(new BoxLayout(panelCiclo, BoxLayout.Y_AXIS));
+        panelCiclo.setBackground(new Color(233, 212, 195));
 
         lblCiclo = new JLabel("Ciclo: -", SwingConstants.CENTER);
-        lblCiclo.setFont(new Font("Arial", Font.BOLD, 18));
+        lblCiclo.setFont(new Font("Roboto", Font.BOLD, 24));
 
-        lblFechaFin = new JLabel("Cierra: -", SwingConstants.RIGHT);
+        lblFechaFin = new JLabel("Cierra: -", SwingConstants.CENTER);
 
-        panelCentro.add(lblCiclo);
-        panelCentro.add(lblFechaFin);
+        panelCiclo.add(lblCiclo);
+        panelCiclo.add(lblFechaFin);
 
-        panelHeader.add(btnPrev, BorderLayout.WEST);
+        panelCentro.add(btnPrev);
+        panelCentro.add(panelCiclo);
+        panelCentro.add(btnNext);
+
+        for (Component comp : panelCentro.getComponents()) {
+            if (comp instanceof JButton boton) {
+                boton.setBackground(Color.WHITE);
+                boton.setOpaque(true);
+                boton.setBorder(new EmptyBorder(5, 15, 5, 15)); // margen interno sin borde
+                boton.setFocusPainted(false);
+                boton.setContentAreaFilled(true);
+
+                // Hover
+                boton.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent e) {
+                        boton.setBackground(Color.LIGHT_GRAY); // gris cuando pasa el mouse
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent e) {
+                        boton.setBackground(Color.WHITE); // vuelve a blanco
+                    }
+                });
+            }
+        }
+
         panelHeader.add(panelCentro, BorderLayout.CENTER);
-        panelHeader.add(btnNext, BorderLayout.EAST);
 
         add(panelHeader, BorderLayout.NORTH);
 
@@ -69,34 +102,89 @@ public class MainWindow extends JFrame {
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaPedidos = new JTable(modeloTabla);
 
+        //Ocultar columna ID
         tablaPedidos.getColumnModel().getColumn(0).setMinWidth(0);
         tablaPedidos.getColumnModel().getColumn(0).setMaxWidth(0);
         tablaPedidos.getColumnModel().getColumn(0).setWidth(0);
 
-        add(new JScrollPane(tablaPedidos), BorderLayout.CENTER);
+        //Estilos header tabla
+        JTableHeader header = tablaPedidos.getTableHeader();
+        header.setFont(new Font("Roboto", Font.BOLD, 15));
+        header.setPreferredSize(new Dimension(header.getWidth(), 30));
+        header.setBackground(new Color(255, 159, 103));
+
+        //Estilos tabla
+        tablaPedidos.setBorder(null);
+        tablaPedidos.setRowHeight(30);
+        tablaPedidos.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        JScrollPane scrollPane = new JScrollPane(tablaPedidos);
+        scrollPane.getViewport().setBackground(new Color(233, 212, 195));
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBorder(null);
+
+        add(scrollPane, BorderLayout.CENTER);
 
         //Footer
-        JPanel panelFooter = new JPanel(new GridLayout(1, 2));
-        lblTotal = new JLabel("Total a cobrar: $0.00");
-        lblGanancia = new JLabel("Ganancia: $0.00");
+        JPanel panelSur = new JPanel(new BorderLayout());
+
+        JPanel panelFooter = new JPanel(new GridLayout(2, 1));
+        panelFooter.setBorder(new EmptyBorder(0, 0, 0, 20));
+
+        lblTotal = new JLabel("Total: $0.00", SwingConstants.RIGHT);
+        lblTotal.setFont(new Font("Arial", Font.BOLD, 16));
+        lblGanancia = new JLabel("Ganancia: $0.00", SwingConstants.RIGHT);
+        lblGanancia.setFont(new Font("Arial", Font.BOLD, 16));
+
         panelFooter.add(lblTotal);
         panelFooter.add(lblGanancia);
-        add(panelFooter, BorderLayout.SOUTH);
 
         //Panel de botones
         JPanel panelBotones = new JPanel();
+        panelBotones.setBorder(new EmptyBorder(0, 180, 0, 0));
+
         JButton btnAgregar = new JButton("Agregar Pedido");
         JButton btnEditar = new JButton("Editar Pedido");
         JButton btnEliminar = new JButton("Eliminar Pedido");
         JButton btnCrearCiclo = new JButton("Crear Ciclo");
+        JButton btnEditarCiclo = new JButton("Editar Ciclo");
         panelBotones.add(btnAgregar);
         panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnCrearCiclo);
-        add(panelBotones, BorderLayout.PAGE_END);
+        panelBotones.add(btnEditarCiclo);
 
-        //Cargar pedidos en la tabla
-        cargarPedidos();
+        for (Component comp : panelBotones.getComponents()) {
+            if (comp instanceof JButton boton) {
+                boton.setBackground(Color.WHITE);
+                boton.setOpaque(true);
+                boton.setBorder(new EmptyBorder(5, 15, 5, 15)); // margen interno sin borde
+                boton.setFocusPainted(false);
+                boton.setContentAreaFilled(true);
+
+                // Hover
+                boton.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent e) {
+                        boton.setBackground(Color.LIGHT_GRAY); // gris cuando pasa el mouse
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent e) {
+                        boton.setBackground(Color.WHITE); // vuelve a blanco
+                    }
+                });
+            }
+        }
+
+        panelFooter.setBackground(new Color(233, 212, 195));
+        panelBotones.setBackground(new Color(233, 212, 195));
+
+        panelSur.add(panelBotones, BorderLayout.CENTER);
+        panelSur.add(panelFooter, BorderLayout.EAST);
+        panelSur.setBorder(null);
+
+        add(panelSur, BorderLayout.SOUTH);
 
         //Funcionalidad botones
         btnAgregar.addActionListener(e -> {
@@ -172,6 +260,21 @@ public class MainWindow extends JFrame {
         btnPrev.addActionListener(e -> cambiarCiclo(-1));
         btnNext.addActionListener(e -> cambiarCiclo(1));
 
+        btnEditarCiclo.addActionListener(e -> {
+            if (cicloActual == null) {
+                JOptionPane.showMessageDialog(this, "No hay un ciclo seleccionado para editar.");
+                return;
+            }
+
+            CicloForm form = new CicloForm(this, cicloDAO, cicloActual);
+            form.setVisible(true);
+
+            cargarCicloMasReciente();
+            cargarPedidos();
+        });
+
+        //Cargar pedidos en la tabla
+        cargarPedidos();
         cargarCicloMasReciente();
     }
 
@@ -224,9 +327,7 @@ public class MainWindow extends JFrame {
         for (Ciclo c : ciclos) {
             if (c.getNumero() == cicloActual.getNumero()){
                 int index = ciclos.indexOf(c);
-                System.out.println(index);
                 int nuevoIndex = index + direccion;
-                System.out.println(nuevoIndex);
 
                 if (nuevoIndex >= 0 && nuevoIndex < ciclos.size()) {
                     cicloActual = ciclos.get(nuevoIndex);
