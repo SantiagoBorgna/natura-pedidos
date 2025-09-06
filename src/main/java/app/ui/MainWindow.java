@@ -82,12 +82,12 @@ public class MainWindow extends JFrame {
                 boton.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseEntered(java.awt.event.MouseEvent e) {
-                        boton.setBackground(Color.LIGHT_GRAY); // gris cuando pasa el mouse
+                        boton.setBackground(Color.LIGHT_GRAY);
                     }
 
                     @Override
                     public void mouseExited(java.awt.event.MouseEvent e) {
-                        boton.setBackground(Color.WHITE); // vuelve a blanco
+                        boton.setBackground(Color.WHITE);
                     }
                 });
             }
@@ -166,12 +166,12 @@ public class MainWindow extends JFrame {
                 boton.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseEntered(java.awt.event.MouseEvent e) {
-                        boton.setBackground(Color.LIGHT_GRAY); // gris cuando pasa el mouse
+                        boton.setBackground(Color.LIGHT_GRAY);
                     }
 
                     @Override
                     public void mouseExited(java.awt.event.MouseEvent e) {
-                        boton.setBackground(Color.WHITE); // vuelve a blanco
+                        boton.setBackground(Color.WHITE);
                     }
                 });
             }

@@ -4,6 +4,7 @@ import app.dao.PedidoDAO;
 import app.model.Pedido;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class PedidoForm extends JDialog {
@@ -13,6 +14,8 @@ public class PedidoForm extends JDialog {
     private JTextField txtCodigo;
     private JTextField txtCantidad;
     private JTextField txtPrecioUnitario;
+    private JButton btnGuardar;
+    private JButton btnCancelar;
 
     private PedidoDAO pedidoDAO;
     private Pedido pedido;
@@ -32,7 +35,7 @@ public class PedidoForm extends JDialog {
         this.cicloId = (pedido != null ? pedido.getCicloId() : null);
 
         setTitle(pedido == null ? "Agregar Pedido" : "Editar Pedido");
-        setSize(400, 300);
+        setSize(400, 340);
         setLocationRelativeTo(parent);
 
         initUI(); // construís la interfaz
@@ -42,35 +45,59 @@ public class PedidoForm extends JDialog {
     }
 
     private void initUI() {
-        setLayout(new GridLayout(6, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(6, 2, 15, 15));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        add(new JLabel("Cliente:"));
+        Font labelFont = new Font("Arial", Font.PLAIN, 15);
+
+        JLabel lblCliente = new JLabel("Cliente:");
+        lblCliente.setFont(labelFont);
+        panel.add(lblCliente);
         txtCliente = new JTextField();
-        add(txtCliente);
+        txtCliente.setFont(labelFont);
+        panel.add(txtCliente);
 
-        add(new JLabel("Producto:"));
+        JLabel lblProducto = new JLabel("Producto:");
+        lblProducto.setFont(labelFont);
+        panel.add(lblProducto);
         txtProducto = new JTextField();
-        add(txtProducto);
+        txtProducto.setFont(labelFont);
+        panel.add(txtProducto);
 
-        add(new JLabel("Código:"));
+        JLabel lblCodigo = new JLabel("Codigo:");
+        lblCodigo.setFont(labelFont);
+        panel.add(lblCodigo);
         txtCodigo = new JTextField();
-        add(txtCodigo);
+        txtCodigo.setFont(labelFont);
+        panel.add(txtCodigo);
 
-        add(new JLabel("Cantidad:"));
+        JLabel lblCantidad = new JLabel("Cantidad:");
+        lblCantidad.setFont(labelFont);
+        panel.add(lblCantidad);
         txtCantidad = new JTextField();
-        add(txtCantidad);
+        txtCantidad.setFont(labelFont);
+        panel.add(txtCantidad);
 
-        add(new JLabel("Precio Unitario:"));
+        JLabel lblPrecioUnit = new JLabel("Precio unitario:");
+        lblPrecioUnit.setFont(labelFont);
+        panel.add(lblPrecioUnit);
         txtPrecioUnitario = new JTextField();
-        add(txtPrecioUnitario);
+        txtPrecioUnitario.setFont(labelFont);
+        panel.add(txtPrecioUnitario);
 
-        JButton btnGuardar = new JButton("Guardar");
+        btnGuardar = new JButton("Guardar");
+        btnCancelar = new JButton("Cancelar");
+
+        aplicarEstiloBoton(btnGuardar);
+        aplicarEstiloBoton(btnCancelar);
+
+        panel.add(btnGuardar);
+        panel.add(btnCancelar);
+
         btnGuardar.addActionListener(e -> guardarPedido());
-        add(btnGuardar);
-
-        JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(e -> dispose());
-        add(btnCancelar);
+
+        add(panel);
     }
 
     private void cargarDatosPedido(Pedido p) {
@@ -115,5 +142,25 @@ public class PedidoForm extends JDialog {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Cantidad y precio deben ser numéricos");
         }
+    }
+
+    private void aplicarEstiloBoton(JButton boton) {
+        boton.setBackground(Color.WHITE);
+        boton.setOpaque(true);
+        boton.setBorder(new EmptyBorder(10, 15, 10, 15)); // margen interno
+        boton.setFocusPainted(false);
+        boton.setContentAreaFilled(true);
+
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                boton.setBackground(Color.LIGHT_GRAY);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                boton.setBackground(Color.WHITE);
+            }
+        });
     }
 }
