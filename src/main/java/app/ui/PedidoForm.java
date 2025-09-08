@@ -14,6 +14,7 @@ public class PedidoForm extends JDialog {
     private JTextField txtCodigo;
     private JTextField txtCantidad;
     private JTextField txtPrecioUnitario;
+    private JTextField txtPuntos;
     private JButton btnGuardar;
     private JButton btnCancelar;
 
@@ -35,7 +36,7 @@ public class PedidoForm extends JDialog {
         this.cicloId = (pedido != null ? pedido.getCicloId() : null);
 
         setTitle(pedido == null ? "Agregar Pedido" : "Editar Pedido");
-        setSize(400, 340);
+        setSize(400, 360);
         setLocationRelativeTo(parent);
 
         initUI(); // construís la interfaz
@@ -45,7 +46,7 @@ public class PedidoForm extends JDialog {
     }
 
     private void initUI() {
-        JPanel panel = new JPanel(new GridLayout(6, 2, 15, 15));
+        JPanel panel = new JPanel(new GridLayout(7, 2, 15, 15));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         Font labelFont = new Font("Arial", Font.PLAIN, 15);
@@ -85,6 +86,13 @@ public class PedidoForm extends JDialog {
         txtPrecioUnitario.setFont(labelFont);
         panel.add(txtPrecioUnitario);
 
+        JLabel lblPuntos = new JLabel("Puntos:");
+        lblPuntos.setFont(labelFont);
+        panel.add(lblPuntos);
+        txtPuntos = new JTextField();
+        txtPuntos.setFont(labelFont);
+        panel.add(txtPuntos);
+
         btnGuardar = new JButton("Guardar");
         btnCancelar = new JButton("Cancelar");
 
@@ -106,6 +114,7 @@ public class PedidoForm extends JDialog {
         txtCodigo.setText(p.getCodigo());
         txtCantidad.setText(String.valueOf(p.getCantidad()));
         txtPrecioUnitario.setText(String.valueOf(p.getPrecioUnitario()));
+        txtPuntos.setText(String.valueOf(p.getPuntos()));
     }
 
     private void guardarPedido() {
@@ -115,6 +124,7 @@ public class PedidoForm extends JDialog {
             String codigo = txtCodigo.getText();
             int cantidad = Integer.parseInt(txtCantidad.getText());
             double precioUnit = Double.parseDouble(txtPrecioUnitario.getText());
+            int puntos = Integer.parseInt(txtPuntos.getText());
 
             if (cantidad < 0 || precioUnit < 0) {
                 JOptionPane.showMessageDialog(this, "La cantidad y el precio deben ser mayores o iguales a 0.");
@@ -123,7 +133,7 @@ public class PedidoForm extends JDialog {
 
             if (pedido == null) {
                 //Agregar
-                Pedido nuevo = new Pedido(cliente, producto, codigo, cantidad, precioUnit);
+                Pedido nuevo = new Pedido(cliente, producto, codigo, cantidad, precioUnit, puntos);
                 nuevo.setCicloId(cicloId);
                 pedidoDAO.agregarPedido(nuevo);
             } else {
@@ -134,6 +144,7 @@ public class PedidoForm extends JDialog {
                 pedido.setCantidad(cantidad);
                 pedido.setPrecioUnitario(precioUnit);
                 pedido.setPrecioTotal(cantidad * precioUnit);
+                pedido.setPuntos(puntos);
                 pedido.setCicloId(cicloId);
 
                 pedidoDAO.actualizarPedido(pedido);

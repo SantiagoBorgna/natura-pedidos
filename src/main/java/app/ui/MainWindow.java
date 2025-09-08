@@ -19,6 +19,7 @@ public class MainWindow extends JFrame {
     private PedidoDAO pedidoDAO;
     private JTable tablaPedidos;
     private DefaultTableModel modeloTabla;
+    private JLabel lblPuntos;
     private JLabel lblTotal;
     private JLabel lblGanancia;
     private CicloDAO cicloDAO;
@@ -44,11 +45,11 @@ public class MainWindow extends JFrame {
 
         //Header
         JPanel panelHeader = new JPanel(new BorderLayout());
-        panelHeader.setBackground(new Color(233, 212, 195));
+        panelHeader.setBackground(new Color(255, 159, 103));
         panelHeader.setBorder(null);
 
         JPanel panelCentro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        panelCentro.setBackground(new Color(233, 212, 195));
+        panelCentro.setBackground(new Color(255, 159, 103));
 
         JButton btnPrev = new JButton("<");
         JButton btnNext = new JButton(">");
@@ -56,7 +57,7 @@ public class MainWindow extends JFrame {
         // Panel central con ciclo y fecha
         JPanel panelCiclo = new JPanel();
         panelCiclo.setLayout(new BoxLayout(panelCiclo, BoxLayout.Y_AXIS));
-        panelCiclo.setBackground(new Color(233, 212, 195));
+        panelCiclo.setBackground(new Color(255, 159, 103));
 
         lblCiclo = new JLabel("Ciclo: -", SwingConstants.CENTER);
         lblCiclo.setFont(new Font("Roboto", Font.BOLD, 24));
@@ -98,7 +99,7 @@ public class MainWindow extends JFrame {
         add(panelHeader, BorderLayout.NORTH);
 
         //Tabla de pedidos
-        String[] columnas = {"id", "Cliente", "Producto", "Código", "Cantidad", "Precio Unitario", "Precio Total"};
+        String[] columnas = {"id", "Cliente", "Producto", "Código", "Cantidad", "Precio Unitario", "Precio Total", "Puntos"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaPedidos = new JTable(modeloTabla);
 
@@ -128,6 +129,14 @@ public class MainWindow extends JFrame {
         //Footer
         JPanel panelSur = new JPanel(new BorderLayout());
 
+        JPanel panelPuntos = new JPanel(new GridLayout(1, 1));
+        panelPuntos.setBorder(new EmptyBorder(0, 20, 0, 0));
+
+        lblPuntos = new JLabel("Puntos: 0", SwingConstants.LEFT);
+        lblPuntos.setFont(new Font("Arial", Font.BOLD, 16));
+
+        panelPuntos.add(lblPuntos);
+
         JPanel panelFooter = new JPanel(new GridLayout(2, 1));
         panelFooter.setBorder(new EmptyBorder(0, 0, 0, 20));
 
@@ -141,7 +150,7 @@ public class MainWindow extends JFrame {
 
         //Panel de botones
         JPanel panelBotones = new JPanel();
-        panelBotones.setBorder(new EmptyBorder(0, 180, 0, 0));
+        panelBotones.setBorder(new EmptyBorder(0, 140, 0, 0));
 
         JButton btnAgregar = new JButton("Agregar Pedido");
         JButton btnEditar = new JButton("Editar Pedido");
@@ -177,9 +186,11 @@ public class MainWindow extends JFrame {
             }
         }
 
+        panelPuntos.setBackground(new Color(233, 212, 195));
         panelFooter.setBackground(new Color(233, 212, 195));
         panelBotones.setBackground(new Color(233, 212, 195));
 
+        panelSur.add(panelPuntos, BorderLayout.WEST);
         panelSur.add(panelBotones, BorderLayout.CENTER);
         panelSur.add(panelFooter, BorderLayout.EAST);
         panelSur.setBorder(null);
@@ -210,8 +221,9 @@ public class MainWindow extends JFrame {
             String codigo = (String) modeloTabla.getValueAt(fila, 3);
             int cantidad = (int) modeloTabla.getValueAt(fila, 4);
             double precioUnit = (double) modeloTabla.getValueAt(fila, 5);
+            int puntos = (int) modeloTabla.getValueAt(fila, 7);
 
-            Pedido pedido = new Pedido(cliente, producto, codigo, cantidad, precioUnit);
+            Pedido pedido = new Pedido(cliente, producto, codigo, cantidad, precioUnit, puntos);
             pedido.setId(id);
             pedido.setCicloId(cicloActual.getId());
 
@@ -282,6 +294,7 @@ public class MainWindow extends JFrame {
         modeloTabla.setRowCount(0); // limpiar
 
         if (cicloActual == null) {
+            lblPuntos.setText("Puntos: 0");
             lblTotal.setText("Total a cobrar: $0.00");
             lblGanancia.setText("Ganancia: $0.00");
             return;
@@ -291,6 +304,7 @@ public class MainWindow extends JFrame {
 
         double total = 0;
         double ganancia = 0;
+        int puntosTotales = 0;
 
         for (Pedido p : pedidos) {
             Object[] fila = {
@@ -300,14 +314,17 @@ public class MainWindow extends JFrame {
                     p.getCodigo(),
                     p.getCantidad(),
                     p.getPrecioUnitario(),
-                    p.getPrecioTotal()
+                    p.getPrecioTotal(),
+                    p.getPuntos()
             };
             modeloTabla.addRow(fila);
 
+            puntosTotales += p.getPuntos();
             total += p.getPrecioTotal();
             ganancia += (p.getPrecioTotal() * 0.25);
         }
 
+        lblPuntos.setText("Puntos: " + puntosTotales);
         lblTotal.setText("Total a cobrar: $" + total);
         lblGanancia.setText("Ganancia: $" + ganancia);
     }

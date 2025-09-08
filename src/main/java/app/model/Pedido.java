@@ -7,16 +7,18 @@ public class Pedido {
     private String codigo;
     private int cantidad;
     private double precioUnitario;
+    private int puntos;
     private double precioTotal;
     private Integer cicloId;
 
     // Constructor
-    public Pedido(String cliente, String producto, String codigo, int cantidad, double precioUnitario) {
+    public Pedido(String cliente, String producto, String codigo, int cantidad, double precioUnitario, int puntos) {
         this.cliente = cliente;
         this.producto = producto;
         this.codigo = codigo;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
+        this.puntos = puntos;
         this.precioTotal = cantidad * precioUnitario;
     }
 
@@ -59,6 +61,14 @@ public class Pedido {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public int getPuntos() {
+        return puntos;
+    }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
     }
 
     public double getPrecioUnitario() {

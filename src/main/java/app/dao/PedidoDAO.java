@@ -9,7 +9,7 @@ import java.util.List;
 public class PedidoDAO {
 
     public void agregarPedido(Pedido pedido) {
-        String sql = "INSERT INTO pedidos (cliente, producto, codigo, cantidad, precio_unitario, precio_total, ciclo_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO pedidos (cliente, producto, codigo, cantidad, precio_unitario, precio_total, puntos, ciclo_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -19,7 +19,8 @@ public class PedidoDAO {
             pstmt.setInt(4, pedido.getCantidad());
             pstmt.setDouble(5, pedido.getPrecioUnitario());
             pstmt.setDouble(6, pedido.getPrecioTotal());
-            pstmt.setInt(7, pedido.getCicloId());
+            pstmt.setInt(7, pedido.getPuntos());
+            pstmt.setInt(8, pedido.getCicloId());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -40,7 +41,8 @@ public class PedidoDAO {
                         rs.getString("producto"),
                         rs.getString("codigo"),
                         rs.getInt("cantidad"),
-                        rs.getDouble("precio_unitario")
+                        rs.getDouble("precio_unitario"),
+                        rs.getInt("puntos")
                 );
                 p.setId(rs.getInt("id"));
                 p.setCicloId(rs.getInt("ciclo_id"));
@@ -67,7 +69,7 @@ public class PedidoDAO {
     }
 
     public void actualizarPedido(Pedido pedido) {
-        String sql = "UPDATE pedidos SET cliente=?, producto=?, codigo=?, cantidad=?, precio_unitario=?, precio_total=?, ciclo_id=? WHERE id=?";
+        String sql = "UPDATE pedidos SET cliente=?, producto=?, codigo=?, cantidad=?, precio_unitario=?, precio_total=?, puntos=?, ciclo_id=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -77,8 +79,9 @@ public class PedidoDAO {
             pstmt.setInt(4, pedido.getCantidad());
             pstmt.setDouble(5, pedido.getPrecioUnitario());
             pstmt.setDouble(6, pedido.getPrecioTotal());
-            pstmt.setInt(7, pedido.getCicloId());
-            pstmt.setInt(8, pedido.getId());
+            pstmt.setInt(7, pedido.getPuntos());
+            pstmt.setInt(8, pedido.getCicloId());
+            pstmt.setInt(9, pedido.getId());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
